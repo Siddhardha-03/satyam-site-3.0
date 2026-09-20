@@ -967,3 +967,210 @@
   top: 10px;
   width: 46px;
 }
+.resources-section {
+  background: #f7fafc;
+  display: grid;
+  gap: 9%;
+  grid-template-columns: 0.75fr 1.25fr;
+  padding: 82px max(5vw, calc((100vw - 1250px) / 2));
+}
+.resources-heading {
+  align-self: center;
+}
+.resources-heading h2 {
+  font-family: Arial, sans-serif;
+  font-size: clamp(40px, 4.5vw, 62px);
+  font-weight: 700;
+  letter-spacing: -0.055em;
+  line-height: 0.97;
+  margin: 0 0 24px;
+}
+.resources-heading h2 em {
+  color: #0ca0ff;
+  font-style: normal;
+}
+.resources-heading > p:last-child {
+  color: #5d7182;
+  font-size: 14px;
+  line-height: 1.7;
+  max-width: 300px;
+}
+.resource-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr 1fr;
+}
+.resource-card {
+  background: #fff;
+  border: 1px solid #dce8f0;
+  box-shadow: 0 7px 18px rgba(19, 55, 83, 0.06);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.resource-card > img,
+.video-poster {
+  height: 165px;
+  object-fit: cover;
+  width: 100%;
+}
+.resource-card > div:last-child {
+  padding: 20px;
+}
+.resource-card span {
+  color: #087ff0;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+.resource-card h3 {
+  color: #123a5b;
+  font-family: Arial, sans-serif;
+  font-size: 22px;
+  margin: 12px 0 8px;
+}
+.resource-card p {
+  color: #637887;
+  font-size: 12px;
+  line-height: 1.6;
+  margin-bottom: 17px;
+}
+.resource-card a {
+  color: #087ff0;
+  font-size: 10px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-transform: uppercase;
+}
+.resource-card a b {
+  font-size: 14px;
+  margin-left: 5px;
+}
+.video-poster {
+  overflow: hidden;
+  position: relative;
+}
+.video-poster iframe {
+  border: 0;
+  height: 100%;
+  display: block;
+  width: 100%;
+}
+.feedback-section {
+  background: #fff;
+  display: grid;
+  gap: 10%;
+  grid-template-columns: 1fr 1fr;
+  padding: 82px max(5vw, calc((100vw - 1150px) / 2));
+}
+.feedback-intro {
+  align-self: center;
+}
+.feedback-intro h2 {
+  font-family: Arial, sans-serif;
+  font-size: clamp(42px, 5vw, 68px);
+  font-weight: 700;
+  letter-spacing: -0.055em;
+  line-height: 0.96;
+  margin: 0 0 24px;
+}
+.feedback-intro h2 em {
+  color: #0ca0ff;
+  font-style: normal;
+}
+.feedback-intro > p:not(.eyebrow) {
+  color: #5b7180;
+  font-size: 14px;
+  line-height: 1.7;
+  max-width: 350px;
+}
+.feedback-domain {
+  color: #087ff0;
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  margin-top: 28px;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+.feedback-domain span {
+  font-size: 15px;
+  margin-left: 8px;
+}
+.feedback-form {
+  background: #eaf3f9;
+  box-shadow: 0 10px 30px rgba(24, 72, 103, 0.1);
+  padding: 27px;
+}
+.feedback-form label {
+  color: #647b8b;
+  display: block;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  margin-top: 19px;
+  text-transform: uppercase;
+}
+.feedback-form input,
+.feedback-form select,
+.feedback-form textarea {
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid #c1d6e2;
+  color: #123a5b;
+  display: block;
+  font-size: 13px;
+  margin-top: 7px;
+  outline: 0;
+  padding: 10px 0;
+  resize: vertical;
+  width: 100%;
+}
+.feedback-form input:focus,
+.feedback-form select:focus,
+.feedback-form textarea:focus {
+  border-color: #087ff0;
+  box-shadow: 0 2px 0 #087ff0;
+}
+.feedback-form .primary-button {
+  cursor: pointer;
+  margin-top: 23px;
+}
+.feedback-form > small {
+  color: #718795;
+  display: block;
+  font-size: 10px;
+  line-height: 1.5;
+  margin-top: 14px;
+}
+@media (max-width: 850px) {
+  .resources-section,
+  .feedback-section {
+    display: block;
+    padding: 70px 7vw;
+  }
+  .resources-heading {
+    margin-bottom: 45px;
+  }
+  .resource-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .feedback-intro {
+    margin-bottom: 45px;
+  }
+}
+@media (max-width: 520px) {
+  .resource-grid {
+    grid-template-columns: 1fr;
+  }
+  .resource-card > img,
+  .video-poster {
+    height: 190px;
+  }
+  .feedback-section {
+    padding: 65px 7vw;
+  }
+  .feedback-form {
+    padding: 20px;
+  }
+}

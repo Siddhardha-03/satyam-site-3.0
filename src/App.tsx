@@ -2,6 +2,8 @@ import { useState, type FormEvent } from "react";
 import "./App.css";
 
 const phone = "9248791189";
+const email = "contact@satyamdatarecoverylab.com";
+const domain = "https://www.satyamdatarecoverylab.com";
 const whatsapp = `https://wa.me/91${phone}`;
 const services = [
   ["Hard disk", "HDD recovery", "/assets/stock_images/hardisk.jpg"],
@@ -33,13 +35,22 @@ const services = [
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [feedbackSent, setFeedbackSent] = useState(false);
   const submitEnquiry = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const subject = `Free diagnosis enquiry - ${data.get("device") || "Storage device"}`;
     const body = `Name: ${data.get("name")}\nPhone: ${data.get("contact")}\nDevice: ${data.get("device")}\nIssue: ${data.get("details")}`;
-    window.location.href = `mailto:satyamdlab@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     setSubmitted(true);
+  };
+  const submitFeedback = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const subject = `Customer feedback - ${data.get("service") || "Satyam Data Recovery Lab"}`;
+    const body = `Name: ${data.get("name")}\nService: ${data.get("service")}\nRating: ${data.get("rating")}\nRecommend: ${data.get("recommend")}\nFeedback: ${data.get("feedback")}`;
+    window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    setFeedbackSent(true);
   };
   const closeMenu = () => setMenuOpen(false);
 
@@ -89,8 +100,14 @@ function App() {
           <a href="#about" onClick={closeMenu}>
             About us
           </a>
+          <a href="#resources" onClick={closeMenu}>
+            Resources
+          </a>
           <a href="#method" onClick={closeMenu}>
             Our method
+          </a>
+          <a href="#feedback" onClick={closeMenu}>
+            Feedback
           </a>
           <a href="#contact" onClick={closeMenu}>
             Contact
@@ -243,6 +260,39 @@ function App() {
             </a>
           </div>
         </section>
+        <section className="resources-section" id="resources">
+          <div className="resources-heading">
+            <p className="eyebrow">From the lab</p>
+            <h2>
+              Clear answers for
+              <br />
+              <em>uncertain moments.</em>
+            </h2>
+            <p>
+              Practical guidance for protecting, understanding and recovering
+              valuable data.
+            </p>
+          </div>
+          <div className="resource-grid">
+            <article className="resource-card">
+              <img
+                src="/assets/stock_images/Lab_image.jpg"
+                alt="Recovery laboratory workspace"
+              />
+              <div>
+                <span>IMAGE BLOG</span>
+                <h3>Inside the recovery lab</h3>
+                <p>
+                  See the devices, tools and careful checks behind a responsible
+                  recovery process.
+                </p>
+                <a href="#about">
+                  Read the image blog <b>↗</b>
+                </a>
+              </div>
+            </article>
+          </div>
+        </section>
         <section className="method-section" id="method">
           <div className="method-heading">
             <p className="eyebrow">How we work</p>
@@ -325,9 +375,13 @@ function App() {
                 <small>Call now</small>
                 <strong>+91 {phone}</strong>
               </a>
-              <a href="mailto:satyamdlab@gmail.com">
+              <a href={`mailto:${email}`}>
                 <small>Email</small>
-                <strong>satyamdlab@gmail.com</strong>
+                <strong>{email}</strong>
+              </a>
+              <a href={domain} target="_blank" rel="noreferrer">
+                <small>Website</small>
+                <strong>satyamdatarecoverylab.com</strong>
               </a>
             </div>
           </div>
@@ -379,6 +433,87 @@ function App() {
           </form>
         </section>
       </main>
+      <section className="feedback-section" id="feedback">
+        <div className="feedback-intro">
+          <p className="eyebrow">Your experience</p>
+          <h2>
+            Tell us how
+            <br />
+            <em>we helped.</em>
+          </h2>
+          <p>
+            Your feedback helps us improve every part of the recovery
+            experience.
+          </p>
+          <a
+            className="feedback-domain"
+            href={domain}
+            target="_blank"
+            rel="noreferrer"
+          >
+            satyamdatarecoverylab.com <span>↗</span>
+          </a>
+        </div>
+        <form className="feedback-form" onSubmit={submitFeedback}>
+          <div className="form-title">
+            <strong>CUSTOMER FEEDBACK</strong>
+            <span>We read every response.</span>
+          </div>
+          <label>
+            Your name
+            <input name="name" required placeholder="Name" />
+          </label>
+          <label>
+            Service received
+            <select name="service" required defaultValue="">
+              <option value="" disabled>
+                Select a service
+              </option>
+              {services.map(([label]) => (
+                <option key={label}>{label}</option>
+              ))}
+            </select>
+          </label>
+          <label>
+            How was your experience?
+            <select name="rating" required defaultValue="">
+              <option value="" disabled>
+                Select a rating
+              </option>
+              <option>Excellent</option>
+              <option>Very good</option>
+              <option>Good</option>
+              <option>Needs improvement</option>
+            </select>
+          </label>
+          <label>
+            Would you recommend us?
+            <select name="recommend" required defaultValue="">
+              <option value="" disabled>
+                Select one
+              </option>
+              <option>Yes, I would recommend Satyam</option>
+              <option>Not yet</option>
+            </select>
+          </label>
+          <label>
+            Your feedback
+            <textarea
+              name="feedback"
+              required
+              rows={4}
+              placeholder="Share a few words about your experience"
+            />
+          </label>
+          <button className="primary-button" type="submit">
+            {feedbackSent ? "Thank you" : "Send feedback"} <span>↗</span>
+          </button>
+          <small>
+            Your feedback is used only to improve our service and respond when
+            needed.
+          </small>
+        </form>
+      </section>
       <footer className="footer">
         <div className="footer-main">
           <a className="brand" href="#top">
@@ -393,6 +528,10 @@ function App() {
           <a href={`tel:+91${phone}`}>+91 {phone}</a>
           <a href={whatsapp} target="_blank" rel="noreferrer">
             WhatsApp
+          </a>
+          <a href={`mailto:${email}`}>{email}</a>
+          <a href={domain} target="_blank" rel="noreferrer">
+            Website
           </a>
           <a className="nav-cta" href="#contact">
             Free diagnosis <span>↗</span>
