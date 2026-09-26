@@ -67,26 +67,16 @@ function App() {
     return saved ? JSON.parse(saved) : defaultMedia;
   });
   const [adminOpen, setAdminOpen] = useState(
-    () =>
-      window.location.pathname === "/satyam@admin" ||
-      window.location.hash === "#admin",
+    () => window.location.hash === "#admin",
   );
   const [adminAuthenticated, setAdminAuthenticated] = useState(false);
   useEffect(() => {
     localStorage.setItem(mediaStorageKey, JSON.stringify(mediaItems));
   }, [mediaItems]);
   useEffect(() => {
-    const onLocationChange = () =>
-      setAdminOpen(
-        window.location.pathname === "/satyam@admin" ||
-          window.location.hash === "#admin",
-      );
-    window.addEventListener("hashchange", onLocationChange);
-    window.addEventListener("popstate", onLocationChange);
-    return () => {
-      window.removeEventListener("hashchange", onLocationChange);
-      window.removeEventListener("popstate", onLocationChange);
-    };
+    const onHashChange = () => setAdminOpen(window.location.hash === "#admin");
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
   }, []);
   const submitEnquiry = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -613,6 +603,7 @@ function App() {
           <a href={domain} target="_blank" rel="noreferrer">
             Website
           </a>
+          <a href="#admin">Admin</a>
           <a className="nav-cta" href="#contact">
             Free diagnosis <span>↗</span>
           </a>
