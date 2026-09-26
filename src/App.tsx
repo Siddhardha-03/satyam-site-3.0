@@ -603,7 +603,7 @@ function App() {
           <a href={domain} target="_blank" rel="noreferrer">
             Website
           </a>
-          <a href="#admin">Admin</a>
+          {/*<a href="#admin">Admin</a> */}
           <a className="nav-cta" href="#contact">
             Free diagnosis <span>↗</span>
           </a>
