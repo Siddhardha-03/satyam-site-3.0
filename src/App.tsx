@@ -1,10 +1,36 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import "./App.css";
 
 const phone = "9248791189";
 const email = "contact@satyamdatarecoverylab.com";
 const domain = "https://www.satyamdatarecoverylab.com";
 const whatsapp = `https://wa.me/91${phone}`;
+const adminPassword = "satyam_buridi@2626";
+const mediaStorageKey = "satyam-recovery-media";
+type MediaItem = {
+  id: string;
+  kind: "image" | "video";
+  title: string;
+  description: string;
+  url: string;
+};
+const defaultMedia: MediaItem[] = [
+  {
+    id: "lab-image",
+    kind: "image",
+    title: "Inside the recovery lab",
+    description:
+      "See the devices, tools and careful checks behind a responsible recovery process.",
+    url: "/assets/stock_images/Lab_image.jpg",
+  },
+];
+
+function toYouTubeEmbed(url: string) {
+  const match = url.match(
+    /(?:youtube\.com\/(?:watch\?v=|shorts\/)|youtu\.be\/)([^?&/]+)/,
+  );
+  return match ? `https://www.youtube.com/embed/${match[1]}` : url;
+}
 const services = [
   ["Hard disk", "HDD recovery", "/assets/stock_images/hardisk.jpg"],
   ["SSD / NVMe", "Solid-State Recovery", "/assets/stock_images/SSD.png"],
@@ -36,6 +62,32 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [feedbackSent, setFeedbackSent] = useState(false);
+  const [mediaItems, setMediaItems] = useState<MediaItem[]>(() => {
+    const saved = localStorage.getItem(mediaStorageKey);
+    return saved ? JSON.parse(saved) : defaultMedia;
+  });
+  const [adminOpen, setAdminOpen] = useState(
+    () =>
+      window.location.pathname === "/satyam@admin" ||
+      window.location.hash === "#admin",
+  );
+  const [adminAuthenticated, setAdminAuthenticated] = useState(false);
+  useEffect(() => {
+    localStorage.setItem(mediaStorageKey, JSON.stringify(mediaItems));
+  }, [mediaItems]);
+  useEffect(() => {
+    const onLocationChange = () =>
+      setAdminOpen(
+        window.location.pathname === "/satyam@admin" ||
+          window.location.hash === "#admin",
+      );
+    window.addEventListener("hashchange", onLocationChange);
+    window.addEventListener("popstate", onLocationChange);
+    return () => {
+      window.removeEventListener("hashchange", onLocationChange);
+      window.removeEventListener("popstate", onLocationChange);
+    };
+  }, []);
   const submitEnquiry = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -53,6 +105,17 @@ function App() {
     setFeedbackSent(true);
   };
   const closeMenu = () => setMenuOpen(false);
+
+  if (adminOpen) {
+    return (
+      <AdminPanel
+        authenticated={adminAuthenticated}
+        setAuthenticated={setAdminAuthenticated}
+        mediaItems={mediaItems}
+        setMediaItems={setMediaItems}
+      />
+    );
+  }
 
   return (
     <div className="site-shell">
@@ -274,23 +337,40 @@ function App() {
             </p>
           </div>
           <div className="resource-grid">
-            <article className="resource-card">
-              <img
-                src="/assets/stock_images/Lab_image.jpg"
-                alt="Recovery laboratory workspace"
-              />
-              <div>
-                <span>IMAGE BLOG</span>
-                <h3>Inside the recovery lab</h3>
-                <p>
-                  See the devices, tools and careful checks behind a responsible
-                  recovery process.
-                </p>
-                <a href="#about">
-                  Read the image blog <b>↗</b>
-                </a>
-              </div>
-            </article>
+            {mediaItems.map((item) => (
+              <article className="resource-card" key={item.id}>
+                {item.kind === "video" ? (
+                  <div className="video-poster">
+                    <iframe
+                      src={toYouTubeEmbed(item.url)}
+                      title={item.title}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerPolicy="strict-origin-when-cross-origin"
+                      allowFullScreen
+                    />
+                  </div>
+                ) : (
+                  <img src={item.url} alt={item.title} />
+                )}
+                <div>
+                  <span>
+                    {item.kind === "video" ? "VIDEO BLOG" : "IMAGE BLOG"}
+                  </span>
+                  <h3>{item.title}</h3>
+                  <p>{item.description}</p>
+                  <a
+                    href={item.kind === "video" ? item.url : "#about"}
+                    target={item.kind === "video" ? "_blank" : undefined}
+                    rel={item.kind === "video" ? "noreferrer" : undefined}
+                  >
+                    {item.kind === "video"
+                      ? "Open on YouTube"
+                      : "Read the image blog"}{" "}
+                    <b>↗</b>
+                  </a>
+                </div>
+              </article>
+            ))}
           </div>
         </section>
         <section className="method-section" id="method">
@@ -546,3 +626,194 @@ function App() {
 }
 
 export default App;
+
+function AdminPanel({
+  authenticated,
+  setAuthenticated,
+  mediaItems,
+  setMediaItems,
+}: {
+  authenticated: boolean;
+  setAuthenticated: (value: boolean) => void;
+  mediaItems: MediaItem[];
+  setMediaItems: (items: MediaItem[]) => void;
+}) {
+  const [password, setPassword] = useState("");
+  const [loginError, setLoginError] = useState(false);
+  const [form, setForm] = useState({
+    kind: "image" as MediaItem["kind"],
+    title: "",
+    description: "",
+    url: "",
+  });
+  const login = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (password === adminPassword) {
+      setAuthenticated(true);
+      setLoginError(false);
+    } else setLoginError(true);
+  };
+  const addMedia = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!form.title || !form.url || mediaItems.length >= 5) return;
+    setMediaItems([...mediaItems, { ...form, id: `${Date.now()}` }]);
+    setForm({ kind: "image", title: "", description: "", url: "" });
+  };
+  if (!authenticated)
+    return (
+      <main className="admin-page">
+        <div className="admin-login">
+          <a className="brand admin-brand" href="#top">
+            <img src="/assets/logo-dark.jpeg" alt="" />
+            <span>
+              <strong>SATYAM</strong>
+              <small>DATA RECOVERY LAB</small>
+            </span>
+          </a>
+          <p className="eyebrow">Private workspace</p>
+          <h1>
+            Content <em>admin.</em>
+          </h1>
+          <p>
+            Manage the small media library shown in the public Resources
+            section.
+          </p>
+          <form className="admin-form" onSubmit={login}>
+            <label>
+              Admin password
+              <input
+                type="password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                required
+                placeholder="Enter password"
+              />
+            </label>
+            {loginError && (
+              <small className="admin-error">Incorrect password.</small>
+            )}
+            <button className="primary-button" type="submit">
+              Enter admin panel <span>↗</span>
+            </button>
+          </form>
+          <a className="admin-back" href="#top">
+            Return to website
+          </a>
+        </div>
+      </main>
+    );
+  return (
+    <main className="admin-page">
+      <div className="admin-shell">
+        <div className="admin-header">
+          <div>
+            <p className="eyebrow">Satyam Data Recovery Lab</p>
+            <h1>
+              Media <em>library.</em>
+            </h1>
+            <p>
+              Manage up to 5 image or YouTube URL entries. Changes are saved in
+              this browser only.
+            </p>
+          </div>
+          <a className="outline-button" href="#top">
+            View website <span>↗</span>
+          </a>
+        </div>
+        <div className="admin-grid">
+          <form className="admin-form admin-card" onSubmit={addMedia}>
+            <div className="form-title">
+              <strong>ADD MEDIA</strong>
+              <span>{mediaItems.length}/5 used</span>
+            </div>
+            <label>
+              Type
+              <select
+                value={form.kind}
+                onChange={(event) =>
+                  setForm({
+                    ...form,
+                    kind: event.target.value as MediaItem["kind"],
+                  })
+                }
+              >
+                <option value="image">Image URL</option>
+                <option value="video">YouTube URL</option>
+              </select>
+            </label>
+            <label>
+              Title
+              <input
+                value={form.title}
+                onChange={(event) =>
+                  setForm({ ...form, title: event.target.value })
+                }
+                required
+                placeholder="Recovery lab guide"
+              />
+            </label>
+            <label>
+              Description
+              <textarea
+                value={form.description}
+                onChange={(event) =>
+                  setForm({ ...form, description: event.target.value })
+                }
+                rows={3}
+                placeholder="Short description"
+              />
+            </label>
+            <label>
+              {form.kind === "video" ? "YouTube URL" : "Image URL"}
+              <input
+                value={form.url}
+                onChange={(event) =>
+                  setForm({ ...form, url: event.target.value })
+                }
+                required
+                placeholder={
+                  form.kind === "video"
+                    ? "https://youtube.com/watch?v=..."
+                    : "https://.../image.jpg"
+                }
+              />
+            </label>
+            <button
+              className="primary-button"
+              type="submit"
+              disabled={mediaItems.length >= 5}
+            >
+              {mediaItems.length >= 5 ? "Library full" : "Add to website"}{" "}
+              <span>↗</span>
+            </button>
+          </form>
+          <section className="admin-card admin-items">
+            <div className="form-title">
+              <strong>LIVE ITEMS</strong>
+              <span>Public Resources</span>
+            </div>
+            {mediaItems.map((item) => (
+              <article className="admin-item" key={item.id}>
+                <div>
+                  <span>{item.kind === "video" ? "VIDEO" : "IMAGE"}</span>
+                  <strong>{item.title}</strong>
+                  <small>{item.url}</small>
+                </div>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setMediaItems(
+                      mediaItems.filter((entry) => entry.id !== item.id),
+                    )
+                  }
+                >
+                  Remove
+                </button>
+              </article>
+            ))}
+          </section>
+        </div>
+      </div>
+    </main>
+  );
+}
