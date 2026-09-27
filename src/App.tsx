@@ -14,6 +14,7 @@ type MediaItem = {
   description: string;
   url: string;
 };
+//for adding images
 const defaultMedia: MediaItem[] = [
   {
     id: "lab-image",
@@ -22,6 +23,38 @@ const defaultMedia: MediaItem[] = [
     description:
       "See the devices, tools and careful checks behind a responsible recovery process.",
     url: "/assets/stock_images/Lab_image.jpg",
+  },
+  {
+    id: "site-catalog-2",
+    kind: "image",
+    title: "Enterprise Storage Recovery",
+    description:
+      "Advanced diagnostic equipment and server arrays for handling complex RAID and enterprise data recovery[cite: 1].",
+    url: "/assets/stock_images/site_catalog_2.png",
+  },
+  {
+    id: "site-catalog-admin",
+    kind: "image",
+    title: "Expert Technician at Work",
+    description:
+      "Our lead specialist carefully inspecting hard drive platters in a certified cleanroom environment[cite: 2].",
+    url: "/assets/stock_images/Site_catalog_admin.png",
+  },
+  {
+    id: "site-catalog-4",
+    kind: "image",
+    title: "Comprehensive Media Support",
+    description:
+      "Support for recovering data from various media, including NVMe SSDs, standard flash drives, and SD cards[cite: 3].",
+    url: "/assets/stock_images/site_catalog_4.png",
+  },
+  {
+    id: "site-catalog",
+    kind: "image",
+    title: "Precision Platter Inspection",
+    description:
+      "Delicate mechanical repairs and data extraction performed with strict safety protocols[cite: 4].",
+    url: "/assets/stock_images/site_catalog.png",
   },
 ];
 
@@ -62,10 +95,16 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [feedbackSent, setFeedbackSent] = useState(false);
-  const [mediaItems, setMediaItems] = useState<MediaItem[]>(() => {
-    const saved = localStorage.getItem(mediaStorageKey);
-    return saved ? JSON.parse(saved) : defaultMedia;
-  });
+  {
+    /*
+  //This is for local storage
+    const [mediaItems, setMediaItems] = useState<MediaItem[]>(() => {
+      const saved = localStorage.getItem(mediaStorageKey);
+      return saved ? JSON.parse(saved) : defaultMedia;
+    });
+  */
+  }
+  const [mediaItems, setMediaItems] = useState<MediaItem[]>(defaultMedia);
   const [adminOpen, setAdminOpen] = useState(
     () => window.location.hash === "#admin",
   );
@@ -340,7 +379,7 @@ function App() {
                     />
                   </div>
                 ) : (
-                  <img src={item.url} alt={item.title} />
+                  <img src={item.url} alt={item.title} /> //Images src { }
                 )}
                 <div>
                   <span>
