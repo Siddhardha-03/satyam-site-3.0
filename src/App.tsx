@@ -32,14 +32,14 @@ const defaultMedia: MediaItem[] = [
       "Advanced diagnostic equipment and server arrays for handling complex RAID and enterprise data recovery[cite: 1].",
     url: "/assets/stock_images/site_catalog_2.png",
   },
-  {
+  /* {
     id: "site-catalog-admin",
     kind: "image",
     title: "Expert Technician at Work",
     description:
       "Our lead specialist carefully inspecting hard drive platters in a certified cleanroom environment[cite: 2].",
     url: "/assets/stock_images/Site_catalog_admin.png",
-  },
+  },*/
   {
     id: "site-catalog-4",
     kind: "image",
